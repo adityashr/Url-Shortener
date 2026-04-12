@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern URL Shortener</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+}
+
+.container{
+    background:white;
+    padding:40px 30px;
+    width:380px;
+    border-radius:15px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.2);
+    text-align:center;
+    animation:fadeIn 0.6s ease-in-out;
+}
+
+h2{
+    margin-bottom:20px;
+    color:#333;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border-radius:8px;
+    border:1px solid #ddd;
+    margin-bottom:15px;
+    font-size:14px;
+    transition:0.3s;
+}
+
+input:focus{
+    border-color:#667eea;
+    outline:none;
+    box-shadow:0 0 8px rgba(102,126,234,0.4);
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#667eea;
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#5563c1;
+    transform:scale(1.03);
+}
+
+.result{
+    margin-top:18px;
+    word-break:break-all;
+}
+
+.result a{
+    color:#28a745;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.result a:hover{
+    text-decoration:underline;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(-20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>🔗 URL Shortener</h2>
+
+    <input type="text" id="longUrl" placeholder="Enter your long URL here">
+    <button onclick="shortenURL()">Shorten URL</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+function generateCode(length){
+    let chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let code="";
+    for(let i=0;i<length;i++){
+        code+=chars.charAt(Math.floor(Math.random()*chars.length));
+    }
+    return code;
+}
+
+function shortenURL(){
+    let longUrl=document.getElementById("longUrl").value;
+    if(!longUrl) return alert("Enter URL");
+
+    let shortCode=generateCode(6);
+    localStorage.setItem(shortCode,longUrl);
+
+    let shortUrl=window.location.href.split("?")[0]+"?code="+shortCode;
+
+    document.getElementById("result").innerHTML=
+    `<a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
+}
+
+let params=new URLSearchParams(window.location.search);''
+let code=params.get("code");
+
+if(code){
+    let originalUrl=localStorage.getItem(code);
+    if(originalUrl){
+        window.location.href=originalUrl;
+    }
+}
+</script>
+
+</body>
+</html>
